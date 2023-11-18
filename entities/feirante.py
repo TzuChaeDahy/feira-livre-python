@@ -2,7 +2,8 @@ import time
 
 class Feirante:
     
-    def __init__(self, email, password):
+    def __init__(self, name, email, password):
+        self.name = name
         self.email = email
         self.password = password
 
