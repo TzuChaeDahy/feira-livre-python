@@ -1,41 +1,84 @@
 import time
 
+from db.admin import admins
+
 class Admin:
-    def __init__(self, console, repository):
+    def __init__(self, console):
         self.console = console
-        self.repository = repository
         self.email = ""
         self.password = ""
+        self.name = ""
     
     def setCredentials(self, email, password):
         self.email = email
         self.password = password
 
+        return self
+
+    def setName(self, name):
+        self.name = name
+        
+        return self
+
+    def handleUserResponse(self, option):
+        if option == "1":
+            print("cadastro")
+        elif option == "2":
+            print("resultados")
+        elif option == "3":
+            self.console.showMenu()
+
+    def signUp(self):
+        self.console.clearConsole()
+        print("-------- Cadastro de administrador --------\n")
+        name = self.console.askForUserResponse("Digite o seu nome: ")
+        email = self.console.askForUserResponse("Digite o seu email: ")
+        password = self.console.askForUserResponse("Digite a sua senha: ")
+
+        admin = Admin(self.console).setCredentials(email, password).setName(name)
+        self.setName(name)
+        self.setCredentials(email, password)
+
+        admins.append(admin)
+
+        return self
+
     def login(self):
         self.console.clearConsole()
-
-        email = self.console.askForUserResponse("Insira seu email: ")
-        if email == "sair":
-            self.console.showMenu()
-            return
-
+        print("-------- Login de administrador --------\n")
+        email = self.console.askForUserResponse("Digite seu email: ")
         password = self.console.askForUserResponse("Insira seu senha: ")
-        if  password == "sair":
-           self.console.showMenu()
-           return
 
         self.console.clearConsole()
-        if self.email == email and self.email != "" and self.password == password and self.password != "":
-            print("Usuário logado com sucesso!")
-            print("Redirecionando...")
-            time.sleep(1.5)
-        else:
-            print("Credenciais incorretas, insira as novamente!")
-            print("Caso deseja voltar para a tela inicial, escreva 'sair'")
+
+        authorized = False
+        for admin in admins:
+            if admin.email == email and admin.email != "" and admin.password == password and admin.password != "":
+                print("Usuário logado com sucesso!")
+                print("Redirecionando...")
+                time.sleep(1.5)
+                authorized = True
+                break
+
+        if not authorized:
+            print("Credenciais incorretas, tente novamente!")
             time.sleep(3)
-            self.showMenu()
+            self.console.showMenu()
 
     def showMenu(self):
-        self.login()
+        if len(admins) <= 0:
+            self.console.clearConsole()
+            print("Não há nenhum administrador cadastrado, por favor realize o cadastro a seguir:")
+            time.sleep(1.5)
+            self.signUp()
+        else: 
+            self.login()
 
-        print("-------- Menu | Administrador --------")
+        self.console.clearConsole()
+        print("-------- Administrador | {} --------\n".format(self.name.capitalize()))
+        print("O que deseja fazer?")
+        print("1 - Cadastrar novo feirante")
+        print("2 - Visualizar resultados por feirante")
+        print("3 - Voltar ao menu inicial")
+        option = self.console.askForUserResponse("")
+        self.handleUserResponse(option)

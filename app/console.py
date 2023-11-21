@@ -4,13 +4,11 @@ from core.admin import Admin
 from core.marketer import Marketer
 from core.client import Client
 
-from repo.adminRepository import AdminRepository
-
 class Console:
 
     def handleUserResponse(self, option):
         if option == "1":
-            Admin(Console(), AdminRepository()).showMenu()
+            Admin(Console()).showMenu()
         elif option == "2":
             Marketer(Console()).showMenu()
         elif option == "3":
