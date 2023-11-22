@@ -5,6 +5,7 @@ from db.marketer import marketers
 from db.product import products
 
 from core.marketer import Marketer
+from core.products import ClassProducts
 
 class Admin:
     def __init__(self, console):
@@ -39,37 +40,28 @@ class Admin:
             time.sleep(1.5)
             self.showMenu()
 
-    # def viewMarketersResults(self):
-    #     self.console.clearConsole()
-    #     email = self.console.askForUserResponse("Digite o email do feirante que deseja busca: ")
-    #     vazio = True
-    #     for product in products:
-    #         if product == email:
-    #             sells = "nenhum"
-    #             revenue = 0
+    def viewMarketersResults(self):
+        self.console.clearConsole()
+        email = self.console.askForUserResponse("Digite o email do feirante que deseja busca: ")
 
-    #             for p in product[email]:
-    #                 if p.totalFaturado > revenue:
-    #                     revenue = p.totalFaturado
-    #                     sells = p.nomeDoProduto
+        if email in products:
+            p = products[email]
 
-    #             vazio = False
-    #             print("O produto mais vendido desse feirante foi: {}".format(sells))
-    #             print("O faturamento desse produto foi de: R$ {}".format(revenue))
-
-    #             self.console.askForUserResponse("Aperte qualquer teclado para sair...")
-    #             self.showMenu()
-    #         else:
-    #             self.console.clearConsole()
-    #             print("Não existe nenhum feirante com esse email!")
-    #             time.sleep(1.5)
-    #             self.showMenu()
+            self.console.clearConsole()
+            contador = 0
+            for n in p:
+                print("ID do produto: {}".format(contador))
+                print("Preço: {}".format(n.valorDoProduto))
+                print("Quantidade vendida: {}".format(n.vendidos))
+                print("Faturamento: {}".format(n.totalFaturado))
+                
+            self.console.askForUserResponse("Aperte qualquer tecla para sair...")
+        else:
+            self.console.clearConsole()
+            print("Não existe feirante com esse email...")
+            self.showMenu()
         
-    #     if vazio:
-    #         self.console.clearConsole()
-    #         print("Não há nenhum feirante cadastrado no momento...")
-    #         time.sleep(1.5)
-    #     self.showMenu()
+        self.showMenu()
 
     def viewAllMarketers(self):
         id = 0
