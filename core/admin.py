@@ -1,6 +1,9 @@
 import time
 
 from db.admin import admins
+from db.marketer import marketers
+
+from core.marketer import Marketer
 
 class Admin:
     def __init__(self, console):
@@ -22,11 +25,27 @@ class Admin:
 
     def handleUserResponse(self, option):
         if option == "1":
-            print("cadastro")
+            self.showRegisterMarketerMenu()
         elif option == "2":
-            print("resultados")
+            print("todos")
         elif option == "3":
+            print("resultados")
+        elif option == "4":
             self.console.showMenu()
+
+    def showRegisterMarketerMenu(self):
+        self.console.clearConsole()
+        print("------- Registrar novo feirante --------\n")
+        name = self.console.askForUserResponse("Digite o nome do feirante: ")
+        email = self.console.askForUserResponse("Digite o email do feirante: ")
+        password = self.console.askForUserResponse("Digite a senha do feirante: ")
+
+        marketers.append(Marketer(self.console).setCredentials(email, password).setName(name))
+        self.console.clearConsole()
+        print("Registrando feirante...")
+        time.sleep(1.5)
+
+        self.showMenu()
 
     def signUp(self):
         self.console.clearConsole()
@@ -35,11 +54,15 @@ class Admin:
         email = self.console.askForUserResponse("Digite o seu email: ")
         password = self.console.askForUserResponse("Digite a sua senha: ")
 
-        admin = Admin(self.console).setCredentials(email, password).setName(name)
         self.setName(name)
         self.setCredentials(email, password)
 
+        admin = Admin(self.console).setCredentials(email, password).setName(name)
         admins.append(admin)
+
+        self.console.clearConsole()
+        print("Registrando novo administrador...")
+        time.sleep(1.5)
 
         return self
 
@@ -54,6 +77,9 @@ class Admin:
         authorized = False
         for admin in admins:
             if admin.email == email and admin.email != "" and admin.password == password and admin.password != "":
+                self.setName(admin.name)
+                self.setCredentials(email, password)
+
                 print("Usuário logado com sucesso!")
                 print("Redirecionando...")
                 time.sleep(1.5)
@@ -65,20 +91,23 @@ class Admin:
             time.sleep(3)
             self.console.showMenu()
 
+        return self
+
     def showMenu(self):
         if len(admins) <= 0:
             self.console.clearConsole()
             print("Não há nenhum administrador cadastrado, por favor realize o cadastro a seguir:")
             time.sleep(1.5)
             self.signUp()
-        else: 
+        elif self.name == "" or self.password == "": 
             self.login()
 
         self.console.clearConsole()
         print("-------- Administrador | {} --------\n".format(self.name.capitalize()))
         print("O que deseja fazer?")
         print("1 - Cadastrar novo feirante")
-        print("2 - Visualizar resultados por feirante")
-        print("3 - Voltar ao menu inicial")
+        print("2 - Visualizar todos os feirantes")
+        print("3 - Visualizar resultados por feirante")
+        print("4 - Voltar ao menu inicial")
         option = self.console.askForUserResponse("")
         self.handleUserResponse(option)

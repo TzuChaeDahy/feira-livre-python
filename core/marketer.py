@@ -4,6 +4,7 @@ from db.admin import admins
 class Marketer:
     def __init__(self, console):
         self.console = console
+        self.name = ""
         self.email = ""
         self.password = ""
         self.revenue = 0
@@ -30,6 +31,12 @@ class Marketer:
     def setCredentials(self, email, password):
         self.email = email
         self.password = password 
+        
+        return self
+    
+    def setName(self, name):
+        self.name = name
+        
         return self
     
     def handleUserResponse(self, option): 
