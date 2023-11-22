@@ -15,6 +15,7 @@ class Marketer:
         self.email = email
         self.password = password 
         
+        products.update({email: []})
         return self
     
     def setName(self, name):
@@ -25,11 +26,11 @@ class Marketer:
     def showRegisterProductMenu(self): 
         self.console.clearConsole()
         print("------- Registrar novo produto --------\n")
-        ClassProducts.nomeDoProduto = self.console.askForUserResponse("Digite o nome do Produto: ")
-        ClassProducts.valorDoProduto = self.console.askForUserResponse("Digite o valor do produto: ")
-        ClassProducts.quantidadeDoProduto = self.console.askForUserResponse("Digite a quantidade do produto: ")
+        nomeDoProduto = self.console.askForUserResponse("Digite o nome do Produto: ")
+        valorDoProduto = self.console.askForUserResponse("Digite o valor do produto: ")
+        quantidadeDoProduto = self.console.askForUserResponse("Digite a quantidade do produto: ")
         
-        products.append(ClassProducts(self.console).setProducts(nomeDoProduto, valorDoProduto, quatidadeDoProduto))
+        products[self.email].append(ClassProducts(self.console).setProducts(nomeDoProduto, valorDoProduto, quantidadeDoProduto))
         self.console.clearConsole()
         print("Registrando Produto...")
         time.sleep(1.5)
@@ -41,7 +42,8 @@ class Marketer:
            print("1")
         elif option == "2" :
             self.showRegisterProductMenu()
-            
+        elif option == "3":
+            self.console.showMenu()            
 
     def login(self):
        self.console.clearConsole()
@@ -56,28 +58,23 @@ class Marketer:
         if marketer.email == email and marketer.email != "" and marketer.password == password and marketer.password != "":
             self.setName(marketer.name)
             self.setCredentials(email, password)
-            
+                    
             print("Usuário logado com sucesso!")
             print("Redirecionando...")
             time.sleep(1.5)
             authorized = True
             break
-        if not authorized:
-            print("Credenciais incorretas, tente novamente!")
-            time.sleep(3)
-            self.console.showMenu()
+       
+       if not authorized:
+        print("Credenciais incorretas, tente novamente!")
+        time.sleep(1.5)
+        self.console.showMenu()
             
-        return self
+       return self
     
     def showMenu(self):
-        if len(marketers) <= 0:
-            self.console.clearConsole()
-            print("Não há nenhum marketer cadastrado, por favor realize o cadastro a seguir:")
-            time.sleep(1.5)
-            self.showRegisterProductMenu()
-        elif self.name == "" or self.password == "":
+        if self.email == "" or self.password == "":
             self.login()
-        
         
         self.console.clearConsole()
         print("-------- MARKETER | {} --------\n".format(self.name.capitalize()))
@@ -86,6 +83,7 @@ class Marketer:
         print("escolha uma das opções a baixo:")
         print("1 - Cadastrar Produto")
         print("2 - Registrar Vendas")
+        print("3 - Voltar ao menu inicial")
         option = self.console.askForUserResponse("")
         self.handleUserResponse(option)
        

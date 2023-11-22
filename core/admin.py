@@ -2,6 +2,7 @@ import time
 
 from db.admin import admins
 from db.marketer import marketers
+from db.product import products
 
 from core.marketer import Marketer
 
@@ -27,11 +28,68 @@ class Admin:
         if option == "1":
             self.showRegisterMarketerMenu()
         elif option == "2":
-            print("todos")
+            self.viewAllMarketers()
         elif option == "3":
-            print("resultados")
+            self.viewMarketersResults()
         elif option == "4":
             self.console.showMenu()
+        else:
+            self.console.clearConsole()
+            print("Houve um erro de digitação, tente novamente!")
+            time.sleep(1.5)
+            self.showMenu()
+
+    # def viewMarketersResults(self):
+    #     self.console.clearConsole()
+    #     email = self.console.askForUserResponse("Digite o email do feirante que deseja busca: ")
+    #     vazio = True
+    #     for product in products:
+    #         if product == email:
+    #             sells = "nenhum"
+    #             revenue = 0
+
+    #             for p in product[email]:
+    #                 if p.totalFaturado > revenue:
+    #                     revenue = p.totalFaturado
+    #                     sells = p.nomeDoProduto
+
+    #             vazio = False
+    #             print("O produto mais vendido desse feirante foi: {}".format(sells))
+    #             print("O faturamento desse produto foi de: R$ {}".format(revenue))
+
+    #             self.console.askForUserResponse("Aperte qualquer teclado para sair...")
+    #             self.showMenu()
+    #         else:
+    #             self.console.clearConsole()
+    #             print("Não existe nenhum feirante com esse email!")
+    #             time.sleep(1.5)
+    #             self.showMenu()
+        
+    #     if vazio:
+    #         self.console.clearConsole()
+    #         print("Não há nenhum feirante cadastrado no momento...")
+    #         time.sleep(1.5)
+    #     self.showMenu()
+
+    def viewAllMarketers(self):
+        id = 0
+        if len(marketers) <= 0:
+            self.console.clearConsole()
+            print("Não há feirantes cadastrados...")
+            time.sleep(1.5)
+            self.showMenu()
+        else:
+            self.console.clearConsole()
+            for marketer in marketers:
+                print("ID: {}".format(id))
+                print("Nome: {}".format(marketer.name))
+                print("Email: {}".format(marketer.email))
+                print("Faturamento: R$ {}\n".format(marketer.revenue))
+
+            print("Aperte qualquer tecla para sair...")
+            self.console.askForUserResponse("")
+
+            self.showMenu()
 
     def showRegisterMarketerMenu(self):
         self.console.clearConsole()
@@ -104,7 +162,7 @@ class Admin:
 
         self.console.clearConsole()
         print("-------- Administrador | {} --------\n".format(self.name.capitalize()))
-        print("O que deseja fazer?")
+        print("O que deseja fazer?\n")
         print("1 - Cadastrar novo feirante")
         print("2 - Visualizar todos os feirantes")
         print("3 - Visualizar resultados por feirante")
