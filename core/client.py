@@ -3,22 +3,18 @@ import time
 from db.marketer import marketers
 
 class Client:
-    def _init_(self, console):
+    def __init__(self, console):
         self.console = console
     
     def showMenu(self):
         print("-------- Menu --------\n")
-        print("Selecione o feirante: ")
-        i = 1
-        if len(products) <= 0:
-            print('Não há feirantes cadastrados...\n')
-            print("Pressione Enter para voltar ao menu inicial...")
-            self.console.askForUserResponse("")
-            self.console.showMenu()
-            
-        else:
-            for marketer in marketers:
-                print('{} - {}'.format(i, marketer.name))
-                i += 1  
-                self.console.askForUserResponse("")
-                self.console.showMenu()
+        for marketerEmail in products:
+            print(marketerEmail.split('@')[0])
+            if len(products[marketerEmail]) <= 0:
+                print("Sem Estoque...")
+            else:
+                for productsArray  in products[marketerEmail]:
+                        print("{} - R${}".format(productsArray.nomeDoProduto, productsArray.valorDoProduto))    
+            print("")
+        self.console.askForUserResponse("")       
+        self.console.showMenu()           

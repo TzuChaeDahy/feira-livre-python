@@ -48,17 +48,21 @@ class Admin:
             p = products[email]
 
             self.console.clearConsole()
-            contador = 0
+            
+            if len(p) <= 0:
+                print("Feirante sem nenhum produto...\n")
+                
             for n in p:
-                print("ID do produto: {}".format(contador))
+                print("Nome do produto: {}".format(n.nomeDoProduto))
                 print("Preço: {}".format(n.valorDoProduto))
                 print("Quantidade vendida: {}".format(n.vendidos))
-                print("Faturamento: {}".format(n.totalFaturado))
+                print("Faturamento: {}\n".format(n.totalFaturado))
                 
             self.console.askForUserResponse("Aperte qualquer tecla para sair...")
         else:
             self.console.clearConsole()
             print("Não existe feirante com esse email...")
+            time.sleep(1.5)
             self.showMenu()
         
         self.showMenu()
@@ -91,6 +95,7 @@ class Admin:
         password = self.console.askForUserResponse("Digite a senha do feirante: ")
 
         marketers.append(Marketer(self.console).setCredentials(email, password).setName(name))
+        products.update({email: []})
         self.console.clearConsole()
         print("Registrando feirante...")
         time.sleep(1.5)
@@ -161,3 +166,4 @@ class Admin:
         print("4 - Voltar ao menu inicial")
         option = self.console.askForUserResponse("")
         self.handleUserResponse(option)
+        

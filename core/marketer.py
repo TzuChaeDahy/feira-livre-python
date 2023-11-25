@@ -4,7 +4,7 @@ from db.product import products
 from core.products import ClassProducts
 
 class Marketer:
-    def _init_(self, console):
+    def __init__(self, console):
         self.console = console
         self.name = ""
         self.email = ""
@@ -15,7 +15,6 @@ class Marketer:
         self.email = email
         self.password = password 
         
-        products.update({email: []})
         return self
     
     def setName(self, name):
@@ -30,7 +29,8 @@ class Marketer:
         valorDoProduto = self.console.askForUserResponse("Digite o valor do produto em reais: ")
         quantidadeDoProduto = self.console.askForUserResponse("Digite a quantidade do produto: ")
         
-        products[self.email].append(ClassProducts(self.console).setProducts(nomeDoProduto, valorDoProduto, quantidadeDoProduto))
+            
+        products[self.email].append(ClassProducts(self.console).setProducts(nomeDoProduto, int(valorDoProduto), int(quantidadeDoProduto)))
         self.console.clearConsole()
         print("Registrando Produto...")
         time.sleep(1.5)
@@ -42,7 +42,7 @@ class Marketer:
     def showRegisterSellMenu(self):
         self.console.clearConsole()
         print("------- Registrar venda --------\n")
-        print("selecione o produto que foi vendido:\n")
+        print("Selecione o produto que foi vendido:\n")
         
         i = 1
         if len(products[self.email]) <= 0:
@@ -55,25 +55,29 @@ class Marketer:
                 i += 1    
         
         option = int(self.console.askForUserResponse(""))
+        x = 0
+        self.revenue = 0
+        encontrado = False
         for n in products[self.email]:
-            print(products[self.email])
-            if option == n:
-                products[self.email][option - 1].totalFaturado = products[self.email][option - 1].vendidos * products[self.email][option - 1].valorDoProduto
-            else:
-                print(option)
-                print("selecione uma opção válida...")
-                time.sleep(1.5)
-                self.showMenu()
-                
-        print("digite a quantidade do Produto: ")
-        quantidade = int(self.console.askForUserResponse(""))
-        for n in range(len(products[self.email])):
-            availableQuantity = int(products[self.email][n].quantidadeDoProduto)
-            if quantidade <= int(products[self.email][n].quantidadeDoProduto):
-               products[self.email][n].quantidadeDoProduto = availableQuantity - quantidade
-            else: 
-                print("Quantidade ou Produto indisponível...")
-                time.sleep(1.5)
+            x = x + 1
+            if option == x:
+                quantidade = int(self.console.askForUserResponse("Digite a quantidade do produto: "))
+                if int(n.quantidadeDoProduto) < quantidade:
+                    print("Quantidade do produto indisponível...")
+                else:
+                    n.vendidos += quantidade
+                    n.quantidadeDoProduto -= quantidade
+                    n.totalFaturado = n.vendidos * n.valorDoProduto
+                    self.console.clearConsole()
+                    print("Venda cadastrada com sucesso!")
+                    encontrado = True
+                    time.sleep(1.5)
+
+        if not encontrado:
+            print(x)
+            print("Selecione uma opção válida...")
+            time.sleep(1.5)
+            self.showMenu()
         
         self.console.clearConsole()
         self.showMenu()
@@ -111,8 +115,16 @@ class Marketer:
         elif option == "3":
             self.showStock()     
         elif option == "4":
-            self.console.showMenu()       
-
+            self.console.showMenu()
+        else:
+            print("Houve um erro de digitação, tente novamente")   
+            time.sleep(1.5)
+            self.showMenu()
+    
+    def setOldRevenue(self, oldRevenue):
+        self.revenue = oldRevenue
+        return self
+            
     def login(self):
        self.console.clearConsole()
        print("-------- Login de Marketer --------\n")
@@ -126,7 +138,8 @@ class Marketer:
         if marketer.email == email and marketer.email != "" and marketer.password == password and marketer.password != "":
             self.setName(marketer.name)
             self.setCredentials(email, password)
-                    
+            self.setOldRevenue(marketer.revenue)
+                                
             print("Usuário logado com sucesso!")
             print("Redirecionando...")
             time.sleep(1.5)
@@ -143,11 +156,13 @@ class Marketer:
     def showMenu(self):
         if self.email == "" or self.password == "":
             self.login()
+            
+        self.calculateTotalRevenue()
         
         self.console.clearConsole()
         print("-------- MARKETER | {} --------\n".format(self.name.capitalize()))
         print("Seja muito bem-vindo!")
-        print("Total faturado: {}".format(self.revenue))
+        print("Total faturado: R$ {}".format(self.revenue))
         print("escolha uma das opções a baixo:")
         print("1 - Cadastrar Produto")
         print("2 - Registrar Vendas")

@@ -1,9 +1,9 @@
 class ClassProducts:
-    def _init_(self, console):
+    def __init__(self, console):
         self.console = console
         self.nomeDoProduto = ""
         self.vendidos = 0
-        self.quantidadeDoProduto = 0
+        self.quantidadeDoProduto = int(0)
         self.valorDoProduto = 0
         self.totalFaturado = 0
         
