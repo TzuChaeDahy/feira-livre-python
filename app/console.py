@@ -24,7 +24,7 @@ class Console:
         return response
 
     def clearConsole(self):
-        os.system("cls||clear")
+        os.system("cls")
 
     def showMenu(self):
         self.clearConsole()

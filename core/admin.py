@@ -1,11 +1,11 @@
 import time
+import csv
 
 from db.admin import admins
 from db.marketer import marketers
 from db.product import products
 
 from core.marketer import Marketer
-from core.products import ClassProducts
 
 class Admin:
     def __init__(self, console):
@@ -33,12 +33,33 @@ class Admin:
         elif option == "3":
             self.viewMarketersResults()
         elif option == "4":
+            self.importMarketers()
+        elif option == "5":
             self.console.showMenu()
         else:
             self.console.clearConsole()
             print("Houve um erro de digitação, tente novamente!")
             time.sleep(1.5)
             self.showMenu()
+
+    def importMarketers(self):
+        self.console.clearConsole()
+
+        path = self.console.askForUserResponse("Digite o caminho do arquivo que deseja importar: ")
+
+        file = open(path)
+        reader = csv.reader(file)
+
+        self.console.clearConsole()
+        print("Importando informações...")
+
+        for row in reader:
+            marketers.append(Marketer(self.console).setCredentials(row[0], row[1]).setName(row[2]))
+            products.update({row[0]: []})
+
+        time.sleep(1.5)
+
+        self.showMenu()
 
     def viewMarketersResults(self):
         self.console.clearConsole()
@@ -163,7 +184,8 @@ class Admin:
         print("1 - Cadastrar novo feirante")
         print("2 - Visualizar todos os feirantes")
         print("3 - Visualizar resultados por feirante")
-        print("4 - Voltar ao menu inicial")
+        print("4 - Importar arquivo com novos feirantes")
+        print("5 - Voltar ao menu inicial")
         option = self.console.askForUserResponse("")
         self.handleUserResponse(option)
         
